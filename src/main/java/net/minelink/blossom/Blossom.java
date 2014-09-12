@@ -5,7 +5,9 @@ import org.apache.commons.io.FileUtils;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.jar.JarFile;
+import java.util.regex.Pattern;
 
 public class Blossom {
 	public static void main(String[] args) {
@@ -21,9 +23,22 @@ public class Blossom {
 		String decompileDirectory = outputDirectory + "/decompiled";
 		String extractDirectory = outputDirectory + "/extracted";
 
+		FileInputStream propInputStream = null;
 		FileOutputStream patchOutputStream = null;
 
+		Properties properties = new Properties();
+
 		try {
+
+			/* Load properties */
+
+			File propFile = new File("blossom.properties");
+
+			if (propFile.exists()) {
+				propInputStream = new FileInputStream(propFile);
+				properties.load(propInputStream);
+			}
+
 			String checksum1 = Utils.getMd5Checksum(new FileInputStream(new File(args[0])));
 			String checksum2 = Utils.getMd5Checksum(new FileInputStream(new File(args[1])));
 
@@ -83,7 +98,14 @@ public class Blossom {
 			List<String> classesDeleted = new ArrayList<>();
 			List<String> classesModified = new ArrayList<>();
 
-			Utils.identifyFileChanges(decompileDir1, decompileDir2, classesCreated, classesDeleted, classesModified);
+			Pattern excludePattern = null;
+			String exclude = properties.getProperty("exclude");
+
+			if (exclude != null && !exclude.isEmpty()) {
+				excludePattern = Pattern.compile("^(" + exclude.replace(".", "/").replace(",", "|") + ")");
+			}
+
+			Utils.identifyFileChanges(decompileDir1, decompileDir2, classesCreated, classesDeleted, classesModified, excludePattern);
 
 			/* Generate unified diff */
 
@@ -125,6 +147,14 @@ public class Blossom {
 			if (patchOutputStream != null) {
 				try {
 					patchOutputStream.close();
+				} catch (IOException e) {
+
+				}
+			}
+
+			if (propInputStream != null) {
+				try {
+					propInputStream.close();
 				} catch (IOException e) {
 
 				}

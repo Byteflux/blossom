@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class Utils {
 	public static String bytesToHex(byte[] bytes) {
@@ -34,13 +35,17 @@ public class Utils {
 		}
 	}
 
-	public static void identifyFileChanges(File directory1, File directory2, List<String> created, List<String> deleted, List<String> modified) throws IOException {
+	public static void identifyFileChanges(File directory1, File directory2, List<String> created, List<String> deleted, List<String> modified, Pattern exclude) throws IOException {
 		Map<String, String> checksums1 = new HashMap<>();
 		Map<String, String> checksums2 = new HashMap<>();
 
 		for (File file : FileUtils.listFiles(directory1, new String[] { "java" }, true)) {
 			String path = directory1.toURI().relativize(file.toURI()).getPath();
 			FileInputStream inputStream = null;
+
+			if (exclude != null && exclude.matcher(path).find()) {
+				continue;
+			}
 
 			try {
 				inputStream = new FileInputStream(file);
@@ -55,6 +60,10 @@ public class Utils {
 		for (File file : FileUtils.listFiles(directory2, new String[] { "java" }, true)) {
 			String path = directory2.toURI().relativize(file.toURI()).getPath();
 			FileInputStream inputStream = null;
+
+			if (exclude != null && exclude.matcher(path).find()) {
+				continue;
+			}
 
 			try {
 				inputStream = new FileInputStream(file);
