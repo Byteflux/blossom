@@ -79,7 +79,7 @@ public class JarHelper {
 			JarEntry jarEntry = enumeration.nextElement();
 			String path = jarEntry.getName();
 
-			if (!path.endsWith(".class")) {
+			if (!jarEntry.isDirectory() && !path.endsWith(".class")) {
 				String checksum = Utils.getMd5Checksum(jar1.jarFile.getInputStream(jar1.jarFile.getEntry(path)));
 				checksums1.put(jarEntry.getName(), checksum);
 			}
@@ -89,7 +89,7 @@ public class JarHelper {
 			JarEntry jarEntry = enumeration.nextElement();
 			String path = jarEntry.getName();
 
-			if (!path.endsWith(".class")) {
+			if (!jarEntry.isDirectory() && !path.endsWith(".class")) {
 				String checksum = Utils.getMd5Checksum(jar2.jarFile.getInputStream(jar2.jarFile.getEntry(path)));
 				checksums2.put(jarEntry.getName(), checksum);
 			}

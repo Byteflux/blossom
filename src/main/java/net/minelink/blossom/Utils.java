@@ -90,16 +90,43 @@ public class Utils {
 		List<String> lines1 = new ArrayList<>();
 		List<String> lines2 = new ArrayList<>();
 
-		String line;
-		BufferedReader reader1 = new BufferedReader(new FileReader(file1));
-		BufferedReader reader2 = new BufferedReader(new FileReader(file2));
+		BufferedReader reader1 = null;
+		BufferedReader reader2 = null;
 
-		while ((line = reader1.readLine()) != null) {
-			lines1.add(line.replaceAll("(\r|\r?\n)$", ""));
-		}
+		try {
+			String line;
 
-		while ((line = reader2.readLine()) != null) {
-			lines2.add(line.replaceAll("(\r|\r?\n)$", ""));
+			if (file1.exists()) {
+				reader1 = new BufferedReader(new FileReader(file1));
+
+				while ((line = reader1.readLine()) != null) {
+					lines1.add(line.replaceAll("(\r|\r?\n)$", ""));
+				}
+			}
+
+			if (file2.exists()) {
+				reader2 = new BufferedReader(new FileReader(file2));
+
+				while ((line = reader2.readLine()) != null) {
+					lines2.add(line.replaceAll("(\r|\r?\n)$", ""));
+				}
+			}
+		} finally {
+			if (reader1 != null) {
+				try {
+					reader1.close();
+				} catch (IOException e) {
+
+				}
+			}
+
+			if (reader2 != null) {
+				try {
+					reader2.close();
+				} catch (IOException e) {
+
+				}
+			}
 		}
 
 		Patch patch = DiffUtils.diff(lines1, lines2);
