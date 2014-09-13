@@ -85,9 +85,9 @@ public class Blossom {
 			JarHelper.identifyFileChanges(jar1, jar2, filesCreated, filesDeleted, filesModified);
 
 			jar2.extract(filesCreated.toArray(new String[filesCreated.size()]));
-			jar1.extract(filesDeleted.toArray(new String[filesCreated.size()]));
-			jar1.extract(filesModified.toArray(new String[filesCreated.size()]));
-			jar2.extract(filesModified.toArray(new String[filesCreated.size()]));
+			jar1.extract(filesDeleted.toArray(new String[filesDeleted.size()]));
+			jar1.extract(filesModified.toArray(new String[filesModified.size()]));
+			jar2.extract(filesModified.toArray(new String[filesModified.size()]));
 
 			/* Identify which Java source files have changed post-decompilation */
 
