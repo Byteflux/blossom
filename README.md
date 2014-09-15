@@ -28,7 +28,7 @@ Blossom attempts to read a file named `blossom.properties` from its working dire
 of Blossom. Currently it is limited to just excluding certain package names from the unified patch.
 
 ```
-exclude=gnu.trove,com.google.common,com.mysql.jdbc # Command-separated list of package names to exclude from patch
+exclude=gnu.trove,com.google.common,com.mysql.jdbc # Comma-separated list of package names to exclude from patch
 ```
 
 ### License
